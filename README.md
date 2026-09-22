@@ -1,4 +1,4 @@
-# Aurelia Diamonds
+# X GEM
 
 A luxury diamond catalog web app built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
@@ -42,7 +42,7 @@ Required columns, in any order (the header row must be present):
 | `clarity`     | string                  | e.g. `VVS1`, `VS2`.                         |
 | `cut`         | string                  | e.g. `Excellent`, `Very Good`.               |
 | `price_usd`   | number                  | e.g. `28450` (no `$` or commas). Internal record only — **never shown on the site**; see "Pricing model" below. |
-| `title`       | string                  | Display name, e.g. `The Aurelia Round Brilliant`. |
+| `title`       | string                  | Display name, e.g. `The Aurelia Round Brilliant` (the seed sample's naming style — pick your own). |
 | `certificate` | string                  | e.g. `GIA`.                                  |
 | `description` | string                  | Longer copy shown on the detail page. Wrap in quotes if it contains commas. |
 
@@ -50,20 +50,22 @@ Malformed rows (missing required fields, non-numeric `carat`/`price_usd`, duplic
 **skipped, not crashed on** — a warning listing every skipped row and the reason is logged to the
 server console when the catalog is loaded.
 
-### 2. Add photos (optional but recommended)
+### 2. Add photos and/or a video (optional but recommended)
 
 Create a folder named exactly after the SKU under `public/images/diamonds/`, containing up to six
-JPEGs numbered `1.jpg` through `6.jpg`:
+JPEGs numbered `1.jpg` through `6.jpg`, and optionally one `video.mp4` (a turntable/fire clip):
 
 ```
 public/images/diamonds/RD-10234/1.jpg
 public/images/diamonds/RD-10234/2.jpg
 public/images/diamonds/RD-10234/3.jpg
+public/images/diamonds/RD-10234/video.mp4
 ```
 
-The site only renders the numbered slots that actually exist — a diamond with 3 photos works
-exactly like one with 6, and a diamond with zero photos falls back to a "no image available"
-placeholder instead of a broken image.
+The site only renders the numbered slots (and the video) that actually exist — a diamond with 3
+photos and no video works exactly like one with 6 photos and a video, and a diamond with no media
+at all falls back to a "no image available" placeholder instead of a broken image. When present,
+the video appears as an extra, playable thumbnail at the end of the gallery strip.
 
 ## Pricing model
 
@@ -79,6 +81,14 @@ the spot. It's saved to that browser's `localStorage`, keyed by SKU — so:
   aid, not a pricing database. If you later want prices set centrally, shared across devices, or
   tied to real accounts, that needs a real backend (see the Inquire CTA note below for the same
   caveat).
+
+## Pending stones awaiting specs
+
+`public/images/diamonds/STONE-01` through `STONE-05` already contain real photo+video pairs
+(uploaded, not placeholders) for five diamonds whose specs haven't been entered yet. Once you
+send the shape/carat/color/clarity/cut/certificate/description for each, add a matching row to
+`data/diamonds.csv` — reusing the `STONE-0N` SKUs (or renaming both the CSV `sku` and the image
+folder to a real SKU/stock number, if you have one) — and they'll appear on the site immediately.
 
 ## Importing your real catalog
 
@@ -115,16 +125,17 @@ components/
 lib/
   types.ts                 Diamond type + shared types
   csv.ts                   CSV parsing + row validation (skips/warns on bad rows)
-  images.ts                Detects which of the 6 image slots exist per SKU
+  images.ts                Detects which of the 6 image slots (+ video.mp4) exist per SKU
   diamonds.ts              Cached loader combining csv.ts + images.ts; filter option helpers
   filters.ts                Filtering/sorting logic shared by the catalog page
   urlFilters.ts             Filters <-> URL query string (de)serialization
+  site.ts                   Business details (name, phone, WhatsApp, email, hours) — edit here
   format.ts, blur.ts        Small display helpers
 
 data/
   diamonds.csv              Source of truth for the catalog
 
-public/images/diamonds/{sku}/1.jpg..6.jpg   Product photography
+public/images/diamonds/{sku}/1.jpg..6.jpg, video.mp4   Product photography + video
 
 scripts/
   generate-placeholder-images.mjs   One-off script that generated the seed placeholder photos
@@ -144,5 +155,6 @@ scripts/
 - **Inquire CTA**: currently a client-side form that shows a confirmation but does not send
   anywhere — see the `TODO` in `components/InquireButton.tsx` for wiring it to a real backend/CRM
   (e.g. an API route that emails the concierge team or forwards to a CRM like HubSpot/Salesforce).
-- **Header contact info**: the phone number and WhatsApp link in `components/Header.tsx` and
-  `components/Footer.tsx` are placeholders — replace with the real business numbers.
+- **Business details**: name, phone, WhatsApp, email and hours all live in one place —
+  `lib/site.ts` — and are used by the header, footer and page metadata. Edit that file to change
+  any of them site-wide.

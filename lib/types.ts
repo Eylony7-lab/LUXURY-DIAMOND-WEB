@@ -13,6 +13,8 @@ export type Diamond = {
   description: string;
   /** Public paths of the images that exist for this SKU, in order (1.jpg..6.jpg). */
   images: string[];
+  /** Public path to this SKU's video.mp4, if one exists. */
+  video: string | null;
 };
 
 /** Raw shape of a CSV row before validation/coercion. */

@@ -19,3 +19,13 @@ export function getDiamondImages(sku: string): string[] {
   }
   return images;
 }
+
+/**
+ * Returns the public URL of this SKU's video.mp4 (a short turntable/fire
+ * clip, common in the trade for showing brilliance photos can't capture),
+ * or null if none was provided.
+ */
+export function getDiamondVideo(sku: string): string | null {
+  const filePath = path.join(DIAMOND_IMAGES_DIR, sku, "video.mp4");
+  return fs.existsSync(filePath) ? `/images/diamonds/${sku}/video.mp4` : null;
+}

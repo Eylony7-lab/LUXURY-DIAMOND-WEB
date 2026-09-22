@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import CatalogClient from "@/components/CatalogClient";
 import { getAllDiamonds, getFilterOptions } from "@/lib/diamonds";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Fine Diamonds | Aurelia Diamonds",
+  title: `Fine Diamonds | ${SITE.name}`,
   description:
     "Browse our curated collection of GIA-certified diamonds. Filter by shape, carat and color to find the perfect stone.",
 };

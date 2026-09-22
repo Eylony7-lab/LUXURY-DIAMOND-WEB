@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { Phone, MessageCircle } from "lucide-react";
-
-// TODO: replace with the real business phone number / WhatsApp link.
-const PHONE_NUMBER = "+1 (212) 555-0148";
-const PHONE_HREF = "tel:+12125550148";
-const WHATSAPP_HREF = "https://wa.me/12125550148";
+import { SITE } from "@/lib/site";
 
 const NAV_LINKS = [
   { href: "/", label: "Diamonds" },
@@ -20,7 +16,7 @@ export default function Header() {
           href="/"
           className="font-serif text-2xl tracking-[0.15em] text-charcoal transition-colors hover:text-gold-dark"
         >
-          AURELIA
+          {SITE.name}
         </Link>
 
         <nav className="hidden items-center gap-10 sm:flex">
@@ -37,15 +33,15 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           <a
-            href={PHONE_HREF}
-            aria-label={`Call us at ${PHONE_NUMBER}`}
-            title={PHONE_NUMBER}
+            href={SITE.phoneHref}
+            aria-label={`Call us at ${SITE.phoneDisplay}`}
+            title={SITE.phoneDisplay}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-charcoal-soft transition-colors hover:border-gold hover:text-gold-dark"
           >
             <Phone size={16} strokeWidth={1.5} />
           </a>
           <a
-            href={WHATSAPP_HREF}
+            href={SITE.whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Message us on WhatsApp"

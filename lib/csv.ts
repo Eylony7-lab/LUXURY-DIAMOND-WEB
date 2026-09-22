@@ -2,7 +2,7 @@ import Papa from "papaparse";
 import { REQUIRED_DIAMOND_COLUMNS, type DiamondCsvRow, type Diamond } from "./types";
 
 type ParseResult = {
-  diamonds: Omit<Diamond, "images">[];
+  diamonds: Omit<Diamond, "images" | "video">[];
   warnings: string[];
 };
 
@@ -37,7 +37,7 @@ export function parseDiamondsCsv(csvText: string): ParseResult {
     );
   }
 
-  const diamonds: Omit<Diamond, "images">[] = [];
+  const diamonds: Omit<Diamond, "images" | "video">[] = [];
   const seenSkus = new Set<string>();
 
   data.forEach((row, index) => {

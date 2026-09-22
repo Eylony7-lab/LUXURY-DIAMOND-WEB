@@ -7,6 +7,7 @@ import SpecTable from "@/components/SpecTable";
 import InquireButton from "@/components/InquireButton";
 import StorePriceTag from "@/components/StorePriceTag";
 import { getAllDiamonds, getDiamondBySku } from "@/lib/diamonds";
+import { SITE } from "@/lib/site";
 
 export function generateStaticParams() {
   return getAllDiamonds().map((diamond) => ({ sku: diamond.sku }));
@@ -21,11 +22,11 @@ export async function generateMetadata({
   const diamond = getDiamondBySku(sku);
 
   if (!diamond) {
-    return { title: "Diamond Not Found | Aurelia Diamonds" };
+    return { title: `Diamond Not Found | ${SITE.name}` };
   }
 
   return {
-    title: `${diamond.title} | Aurelia Diamonds`,
+    title: `${diamond.title} | ${SITE.name}`,
     description: diamond.description,
     openGraph: {
       title: diamond.title,
@@ -58,7 +59,7 @@ export default async function DiamondDetailPage({
       </Link>
 
       <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <ImageGallery images={diamond.images} alt={diamond.title} />
+        <ImageGallery images={diamond.images} video={diamond.video} alt={diamond.title} />
 
         <div>
           <p className="text-xs uppercase tracking-[0.18em] text-charcoal-soft">

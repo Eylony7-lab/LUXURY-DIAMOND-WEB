@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { cache } from "react";
 import { parseDiamondsCsv } from "./csv";
-import { getDiamondImages } from "./images";
+import { getDiamondImages, getDiamondVideo } from "./images";
 import type { Diamond, FilterOptions } from "./types";
 
 const CSV_PATH = path.join(process.cwd(), "data", "diamonds.csv");
@@ -20,6 +20,7 @@ export const getAllDiamonds = cache((): Diamond[] => {
   return diamonds.map((diamond) => ({
     ...diamond,
     images: getDiamondImages(diamond.sku),
+    video: getDiamondVideo(diamond.sku),
   }));
 });
 

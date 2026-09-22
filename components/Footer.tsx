@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SITE } from "@/lib/site";
 
 export default function Footer() {
   return (
@@ -7,11 +8,11 @@ export default function Footer() {
         <div className="grid gap-10 sm:grid-cols-3">
           <div>
             <Link href="/" className="font-serif text-xl tracking-[0.15em] text-charcoal">
-              AURELIA
+              {SITE.name}
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-charcoal-soft">
-              Ethically sourced, individually certified diamonds — curated for those who
-              appreciate rarity and craftsmanship.
+              Individually certified diamonds — curated for the stores and clients who appreciate
+              rarity and craftsmanship.
             </p>
           </div>
 
@@ -20,18 +21,17 @@ export default function Footer() {
               Contact
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-charcoal-soft">
-              {/* TODO: replace placeholder contact details with real business info. */}
               <li>
-                <a href="tel:+12125550148" className="hover:text-gold-dark">
-                  +1 (212) 555-0148
+                <a href={SITE.phoneHref} className="hover:text-gold-dark">
+                  {SITE.phoneDisplay}
                 </a>
               </li>
               <li>
-                <a href="mailto:concierge@aurelia-diamonds.example" className="hover:text-gold-dark">
-                  concierge@aurelia-diamonds.example
+                <a href={`mailto:${SITE.email}`} className="hover:text-gold-dark">
+                  {SITE.email}
                 </a>
               </li>
-              <li>By appointment only &mdash; New York, NY</li>
+              <li>{SITE.hours}</li>
             </ul>
           </div>
 
@@ -41,14 +41,14 @@ export default function Footer() {
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-charcoal-soft">
               <li>GIA certified diamonds</li>
-              <li>Complimentary insured shipping</li>
-              <li>30-day return policy</li>
+              <li>Handpicked for exceptional quality</li>
+              <li>Trade pricing for retail partners</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 border-t border-line pt-6 text-xs text-charcoal-soft/80">
-          &copy; {new Date().getFullYear()} Aurelia Diamonds. All rights reserved.
+          &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
         </div>
       </div>
     </footer>
