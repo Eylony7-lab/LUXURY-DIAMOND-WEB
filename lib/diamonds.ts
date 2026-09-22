@@ -34,19 +34,16 @@ export function getFilterOptions(diamonds: Diamond[]): FilterOptions {
       shapes: [],
       colors: [],
       caratRange: [0, 0],
-      priceRange: [0, 0],
     };
   }
 
   const shapes = Array.from(new Set(diamonds.map((d) => d.shape))).sort();
   const colors = Array.from(new Set(diamonds.map((d) => d.color))).sort();
   const carats = diamonds.map((d) => d.carat);
-  const prices = diamonds.map((d) => d.price_usd);
 
   return {
     shapes,
     colors,
     caratRange: [Math.floor(Math.min(...carats) * 100) / 100, Math.ceil(Math.max(...carats) * 100) / 100],
-    priceRange: [Math.floor(Math.min(...prices)), Math.ceil(Math.max(...prices))],
   };
 }

@@ -5,7 +5,7 @@ import { getAllDiamonds, getFilterOptions } from "@/lib/diamonds";
 export const metadata: Metadata = {
   title: "Fine Diamonds | Aurelia Diamonds",
   description:
-    "Browse our curated collection of GIA-certified diamonds. Filter by shape, carat, color and price to find the perfect stone.",
+    "Browse our curated collection of GIA-certified diamonds. Filter by shape, carat and color to find the perfect stone.",
 };
 
 type SearchParams = { [key: string]: string | string[] | undefined };

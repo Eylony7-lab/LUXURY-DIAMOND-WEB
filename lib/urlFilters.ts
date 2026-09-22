@@ -39,7 +39,6 @@ export function parseFiltersFromParams(
       shapes: shapesParam ? shapesParam.split(",").filter(Boolean) : [],
       colors: colorsParam ? colorsParam.split(",").filter(Boolean) : [],
       caratRange: parseRange(getParam(params, "carat"), options.caratRange),
-      priceRange: parseRange(getParam(params, "price"), options.priceRange),
     },
     sort: isSortOption(getParam(params, "sort")) ? (getParam(params, "sort") as SortOption) : "relevance",
   };
@@ -62,13 +61,6 @@ export function buildSearchParams(
     filters.caratRange[1] !== options.caratRange[1]
   ) {
     params.set("carat", `${filters.caratRange[0]}-${filters.caratRange[1]}`);
-  }
-
-  if (
-    filters.priceRange[0] !== options.priceRange[0] ||
-    filters.priceRange[1] !== options.priceRange[1]
-  ) {
-    params.set("price", `${filters.priceRange[0]}-${filters.priceRange[1]}`);
   }
 
   if (sort !== "relevance") params.set("sort", sort);

@@ -1,4 +1,4 @@
-import { formatCarat, formatPrice } from "@/lib/format";
+import { formatCarat } from "@/lib/format";
 import type { Diamond } from "@/lib/types";
 
 export default function SpecTable({ diamond }: { diamond: Diamond }) {
@@ -10,7 +10,6 @@ export default function SpecTable({ diamond }: { diamond: Diamond }) {
     ["Cut", diamond.cut],
     ["Certificate", diamond.certificate],
     ["SKU", diamond.sku],
-    ["Price", formatPrice(diamond.price_usd)],
   ];
 
   return (

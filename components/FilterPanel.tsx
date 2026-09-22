@@ -1,7 +1,6 @@
 "use client";
 
 import RangeSlider from "./RangeSlider";
-import { formatPrice } from "@/lib/format";
 import type { CatalogFilters } from "@/lib/filters";
 import type { FilterOptions } from "@/lib/types";
 
@@ -11,7 +10,6 @@ type FilterPanelProps = {
   onToggleShape: (shape: string) => void;
   onToggleColor: (color: string) => void;
   onCaratChange: (range: [number, number]) => void;
-  onPriceChange: (range: [number, number]) => void;
   onClear: () => void;
   activeCount: number;
 };
@@ -22,7 +20,6 @@ export default function FilterPanel({
   onToggleShape,
   onToggleColor,
   onCaratChange,
-  onPriceChange,
   onClear,
   activeCount,
 }: FilterPanelProps) {
@@ -112,22 +109,6 @@ export default function FilterPanel({
               </label>
             );
           })}
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend className="text-xs uppercase tracking-[0.18em] text-charcoal-soft">
-          Price
-        </legend>
-        <div className="mt-4">
-          <RangeSlider
-            min={options.priceRange[0]}
-            max={options.priceRange[1]}
-            step={50}
-            value={filters.priceRange}
-            onChange={onPriceChange}
-            formatValue={(v) => formatPrice(v)}
-          />
         </div>
       </fieldset>
     </div>

@@ -5,8 +5,8 @@ import { ChevronLeft } from "lucide-react";
 import ImageGallery from "@/components/ImageGallery";
 import SpecTable from "@/components/SpecTable";
 import InquireButton from "@/components/InquireButton";
+import StorePriceTag from "@/components/StorePriceTag";
 import { getAllDiamonds, getDiamondBySku } from "@/lib/diamonds";
-import { formatPrice } from "@/lib/format";
 
 export function generateStaticParams() {
   return getAllDiamonds().map((diamond) => ({ sku: diamond.sku }));
@@ -67,9 +67,6 @@ export default async function DiamondDetailPage({
           <h1 className="mt-2 font-serif text-3xl leading-tight text-charcoal sm:text-4xl">
             {diamond.title}
           </h1>
-          <p className="mt-3 font-serif text-2xl text-gold-dark">
-            {formatPrice(diamond.price_usd)}
-          </p>
 
           <div className="mt-8 border-t border-line pt-8">
             <SpecTable diamond={diamond} />
@@ -82,7 +79,16 @@ export default async function DiamondDetailPage({
             </p>
           </div>
 
-          <div className="mt-10">
+          <div className="mt-10 border-t border-line pt-8">
+            <p className="text-xs uppercase tracking-[0.18em] text-charcoal-soft">
+              Your Price
+            </p>
+            <div className="mt-3">
+              <StorePriceTag sku={diamond.sku} />
+            </div>
+          </div>
+
+          <div className="mt-8">
             <InquireButton sku={diamond.sku} title={diamond.title} />
           </div>
         </div>

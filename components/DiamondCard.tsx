@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { shimmerBlurDataUrl } from "@/lib/blur";
-import { formatCarat, formatPrice } from "@/lib/format";
+import { formatCarat } from "@/lib/format";
 import type { Diamond } from "@/lib/types";
 
 export default function DiamondCard({ diamond }: { diamond: Diamond }) {
@@ -42,7 +42,7 @@ export default function DiamondCard({ diamond }: { diamond: Diamond }) {
         </div>
       </div>
       <p className="mt-1 text-sm tracking-wide text-gold-dark">
-        {formatPrice(diamond.price_usd)}
+        Color {diamond.color} &middot; Clarity {diamond.clarity}
       </p>
     </Link>
   );

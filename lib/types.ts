@@ -31,16 +31,10 @@ export const REQUIRED_DIAMOND_COLUMNS = [
   "description",
 ] as const;
 
-export type SortOption =
-  | "relevance"
-  | "price-asc"
-  | "price-desc"
-  | "carat-asc"
-  | "carat-desc";
+export type SortOption = "relevance" | "carat-asc" | "carat-desc";
 
 export type FilterOptions = {
   shapes: string[];
   colors: string[];
   caratRange: [number, number];
-  priceRange: [number, number];
 };

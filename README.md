@@ -2,6 +2,12 @@
 
 A luxury diamond catalog web app built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
+Designed as an **in-store presentation tool**: it's meant to run on an iPad kept at a retail
+counter, letting a store owner show customers stones from this catalog that they wouldn't
+otherwise have access to. Accordingly, **the site never displays our `price_usd` from the CSV** —
+each store rep can tap "Set Your Price" on a diamond's detail page and type in whatever price
+they want to quote, saved locally on that device (see "Pricing model" below).
+
 ## Running it locally
 
 ```bash
@@ -35,7 +41,7 @@ Required columns, in any order (the header row must be present):
 | `color`       | string                  | e.g. `D`, `E`, `F`. Feeds the Color filter.  |
 | `clarity`     | string                  | e.g. `VVS1`, `VS2`.                         |
 | `cut`         | string                  | e.g. `Excellent`, `Very Good`.               |
-| `price_usd`   | number                  | e.g. `28450` (no `$` or commas).            |
+| `price_usd`   | number                  | e.g. `28450` (no `$` or commas). Internal record only — **never shown on the site**; see "Pricing model" below. |
 | `title`       | string                  | Display name, e.g. `The Aurelia Round Brilliant`. |
 | `certificate` | string                  | e.g. `GIA`.                                  |
 | `description` | string                  | Longer copy shown on the detail page. Wrap in quotes if it contains commas. |
@@ -59,6 +65,21 @@ The site only renders the numbered slots that actually exist — a diamond with 
 exactly like one with 6, and a diamond with zero photos falls back to a "no image available"
 placeholder instead of a broken image.
 
+## Pricing model
+
+The catalog and detail pages never render `price_usd` — no price filter, no price sort, no price
+anywhere in the customer-facing UI. Instead, the diamond detail page has a **"Your Price"**
+control (`components/StorePriceTag.tsx`) that lets whoever is holding the iPad type in a price on
+the spot. It's saved to that browser's `localStorage`, keyed by SKU — so:
+
+- It persists across reloads on that same iPad (the store rep sets it once per stone).
+- It is **not** synced anywhere — a different device (or a different store) starts blank and can
+  set its own price for the same diamond.
+- There is no backend and no admin view for it by design; it's a lightweight per-device quoting
+  aid, not a pricing database. If you later want prices set centrally, shared across devices, or
+  tied to real accounts, that needs a real backend (see the Inquire CTA note below for the same
+  caveat).
+
 ## Importing your real catalog
 
 Replace `data/diamonds.csv` with your export (keep the same column names) and drop your photos
@@ -79,14 +100,15 @@ app/
 
 components/
   Header.tsx, Footer.tsx
-  DiamondCard.tsx          Catalog grid item
+  DiamondCard.tsx          Catalog grid item (shape/carat/color/clarity — no price)
   CatalogClient.tsx        Client-side filtering/sorting/infinite scroll + URL sync
-  FilterPanel.tsx          Shape/carat/color/price filter controls
+  FilterPanel.tsx          Shape/carat/color filter controls
   FilterDrawer.tsx         Mobile slide-over wrapper around FilterPanel
-  RangeSlider.tsx          Dual-thumb range slider (carat, price)
+  RangeSlider.tsx          Dual-thumb range slider (carat)
   SortDropdown.tsx
   ImageGallery.tsx         Detail-page carousel, thumbnails, click-to-zoom
   SpecTable.tsx
+  StorePriceTag.tsx        "Your Price" control — store rep enters a price, saved per-SKU in localStorage
   InquireButton.tsx        "Inquire" CTA + contact form modal
   EmptyState.tsx           "No diamonds match" state
 

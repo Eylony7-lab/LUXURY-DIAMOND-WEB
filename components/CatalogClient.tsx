@@ -46,7 +46,7 @@ export default function CatalogClient({
   // Reset pagination whenever the result set changes shape. Adjusting state
   // during render (rather than in an effect) avoids an extra render pass —
   // see https://react.dev/learn/you-might-not-need-an-effect
-  const resultsKey = `${filters.shapes.join(",")}|${filters.colors.join(",")}|${filters.caratRange.join("-")}|${filters.priceRange.join("-")}|${sort}`;
+  const resultsKey = `${filters.shapes.join(",")}|${filters.colors.join(",")}|${filters.caratRange.join("-")}|${sort}`;
   const [lastResultsKey, setLastResultsKey] = useState(resultsKey);
   if (resultsKey !== lastResultsKey) {
     setLastResultsKey(resultsKey);
@@ -59,8 +59,7 @@ export default function CatalogClient({
   const activeCount =
     filters.shapes.length +
     filters.colors.length +
-    (filters.caratRange[0] !== options.caratRange[0] || filters.caratRange[1] !== options.caratRange[1] ? 1 : 0) +
-    (filters.priceRange[0] !== options.priceRange[0] || filters.priceRange[1] !== options.priceRange[1] ? 1 : 0);
+    (filters.caratRange[0] !== options.caratRange[0] || filters.caratRange[1] !== options.caratRange[1] ? 1 : 0);
 
   // Keep the URL in sync (debounced) so views stay shareable/bookmarkable.
   useEffect(() => {
@@ -111,7 +110,6 @@ export default function CatalogClient({
       shapes: [],
       colors: [],
       caratRange: options.caratRange,
-      priceRange: options.priceRange,
     });
   }
 
@@ -121,7 +119,6 @@ export default function CatalogClient({
     onToggleShape: toggleShape,
     onToggleColor: toggleColor,
     onCaratChange: (range: [number, number]) => setFilters((f) => ({ ...f, caratRange: range })),
-    onPriceChange: (range: [number, number]) => setFilters((f) => ({ ...f, priceRange: range })),
     onClear: clearFilters,
     activeCount,
   };

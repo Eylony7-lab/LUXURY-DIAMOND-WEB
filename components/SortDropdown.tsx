@@ -4,13 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { SORT_LABELS } from "@/lib/filters";
 import type { SortOption } from "@/lib/types";
 
-const OPTIONS: SortOption[] = [
-  "relevance",
-  "price-asc",
-  "price-desc",
-  "carat-asc",
-  "carat-desc",
-];
+const OPTIONS: SortOption[] = ["relevance", "carat-asc", "carat-desc"];
 
 export default function SortDropdown({
   value,
