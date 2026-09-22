@@ -10,6 +10,7 @@ export type Diamond = {
   price_usd: number;
   title: string;
   certificate: string;
+  /** Optional internal note — never displayed on the site. */
   description: string;
   /** Public paths of the images that exist for this SKU, in order (1.jpg..6.jpg). */
   images: string[];
@@ -30,7 +31,6 @@ export const REQUIRED_DIAMOND_COLUMNS = [
   "price_usd",
   "title",
   "certificate",
-  "description",
 ] as const;
 
 export type SortOption = "relevance" | "carat-asc" | "carat-desc";

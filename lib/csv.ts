@@ -82,7 +82,7 @@ export function parseDiamondsCsv(csvText: string): ParseResult {
       price_usd,
       title: row.title.trim(),
       certificate: row.certificate.trim(),
-      description: row.description.trim(),
+      description: (row.description ?? "").trim(),
     });
   });
 

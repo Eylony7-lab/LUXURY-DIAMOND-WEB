@@ -44,7 +44,7 @@ Required columns, in any order (the header row must be present):
 | `price_usd`   | number                  | e.g. `28450` (no `$` or commas). Internal record only — **never shown on the site**; see "Pricing model" below. |
 | `title`       | string                  | Display name, e.g. `The Aurelia Round Brilliant` (the seed sample's naming style — pick your own). |
 | `certificate` | string                  | e.g. `GIA`.                                  |
-| `description` | string                  | Longer copy shown on the detail page. Wrap in quotes if it contains commas. |
+| `description` | string, optional        | Internal note only — **never shown on the site** (this is a photo-first catalog, no marketing copy). Safe to leave blank. |
 
 Malformed rows (missing required fields, non-numeric `carat`/`price_usd`, duplicate `sku`) are
 **skipped, not crashed on** — a warning listing every skipped row and the reason is logged to the
@@ -86,7 +86,7 @@ the spot. It's saved to that browser's `localStorage`, keyed by SKU — so:
 
 `public/images/diamonds/STONE-01` through `STONE-05` already contain real photo+video pairs
 (uploaded, not placeholders) for five diamonds whose specs haven't been entered yet. Once you
-send the shape/carat/color/clarity/cut/certificate/description for each, add a matching row to
+send the shape/carat/color/clarity/cut/certificate/price for each, add a matching row to
 `data/diamonds.csv` — reusing the `STONE-0N` SKUs (or renaming both the CSV `sku` and the image
 folder to a real SKU/stock number, if you have one) — and they'll appear on the site immediately.
 
@@ -112,9 +112,8 @@ components/
   Header.tsx, Footer.tsx
   DiamondCard.tsx          Catalog grid item (shape/carat/color/clarity — no price)
   CatalogClient.tsx        Client-side filtering/sorting/infinite scroll + URL sync
-  FilterPanel.tsx          Shape/carat/color filter controls
-  FilterDrawer.tsx         Mobile slide-over wrapper around FilterPanel
-  RangeSlider.tsx          Dual-thumb range slider (carat)
+  FilterBar.tsx            Horizontal filter bar above the grid — Shape/Carat/Color dropdowns + sort
+  RangeSlider.tsx          Dual-thumb range slider (carat, used inside the Carat dropdown)
   SortDropdown.tsx
   ImageGallery.tsx         Detail-page carousel, thumbnails, click-to-zoom
   SpecTable.tsx
@@ -152,6 +151,10 @@ scripts/
   stay shareable and bookmarkable, and reloading from a shared link restores the exact state.
 - **Infinite scroll**: an `IntersectionObserver` on a sentinel element reveals results in batches
   of 24 as the user scrolls.
+- **Photo-first catalog**: by design there's no page intro copy and no per-diamond description
+  shown anywhere — the grid of photos is the first and only thing between the header and the
+  stones. Filters live in a horizontal bar (`FilterBar.tsx`) above the grid rather than a sidebar,
+  so nothing competes with the photos for space, on desktop or mobile.
 - **Inquire CTA**: currently a client-side form that shows a confirmation but does not send
   anywhere — see the `TODO` in `components/InquireButton.tsx` for wiring it to a real backend/CRM
   (e.g. an API route that emails the concierge team or forwards to a CRM like HubSpot/Salesforce).

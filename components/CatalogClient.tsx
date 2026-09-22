@@ -2,11 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { SlidersHorizontal } from "lucide-react";
 import DiamondCard from "./DiamondCard";
-import FilterPanel from "./FilterPanel";
-import FilterDrawer from "./FilterDrawer";
-import SortDropdown from "./SortDropdown";
+import FilterBar from "./FilterBar";
 import EmptyState from "./EmptyState";
 import { applyFilters, sortDiamonds, type CatalogFilters } from "@/lib/filters";
 import { buildSearchParams, parseFiltersFromParams } from "@/lib/urlFilters";
@@ -35,7 +32,6 @@ export default function CatalogClient({
   const [filters, setFilters] = useState<CatalogFilters>(initial.filters);
   const [sort, setSort] = useState<SortOption>(initial.sort);
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const sentinelRef = useRef<HTMLDivElement>(null);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -113,81 +109,40 @@ export default function CatalogClient({
     });
   }
 
-  const filterPanelProps = {
-    options,
-    filters,
-    onToggleShape: toggleShape,
-    onToggleColor: toggleColor,
-    onCaratChange: (range: [number, number]) => setFilters((f) => ({ ...f, caratRange: range })),
-    onClear: clearFilters,
-    activeCount,
-  };
-
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-10 max-w-2xl">
-        <h1 className="font-serif text-3xl text-charcoal sm:text-4xl">The Collection</h1>
-        <p className="mt-3 text-sm leading-relaxed text-charcoal-soft">
-          Each diamond in our collection is individually selected and certified for exceptional
-          cut, clarity and brilliance.
-        </p>
-      </div>
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <FilterBar
+        options={options}
+        filters={filters}
+        sort={sort}
+        onSortChange={setSort}
+        onToggleShape={toggleShape}
+        onToggleColor={toggleColor}
+        onCaratChange={(range) => setFilters((f) => ({ ...f, caratRange: range }))}
+        onClear={clearFilters}
+        activeCount={activeCount}
+        resultCount={sorted.length}
+      />
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[260px_1fr]">
-        <aside className="hidden lg:block">
-          <div className="sticky top-28">
-            <FilterPanel {...filterPanelProps} />
+      {visible.length === 0 ? (
+        <EmptyState onClear={clearFilters} />
+      ) : (
+        <>
+          <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 xl:grid-cols-4">
+            {visible.map((diamond) => (
+              <DiamondCard key={diamond.sku} diamond={diamond} />
+            ))}
           </div>
-        </aside>
 
-        <div>
-          <div className="mb-6 flex items-center justify-between gap-4 border-b border-line pb-4">
-            <p className="text-sm text-charcoal-soft">
-              {sorted.length} {sorted.length === 1 ? "diamond" : "diamonds"}
-            </p>
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setIsDrawerOpen(true)}
-                className="flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm text-charcoal-soft transition-colors hover:border-gold lg:hidden"
-              >
-                <SlidersHorizontal size={14} strokeWidth={1.5} />
-                Filters
-                {activeCount > 0 && (
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[10px] text-white">
-                    {activeCount}
-                  </span>
-                )}
-              </button>
-              <SortDropdown value={sort} onChange={setSort} />
+          {hasMore && (
+            <div ref={sentinelRef} className="flex justify-center py-12">
+              <span className="text-xs uppercase tracking-widest text-charcoal-soft">
+                Loading more…
+              </span>
             </div>
-          </div>
-
-          {visible.length === 0 ? (
-            <EmptyState onClear={clearFilters} />
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 xl:grid-cols-4">
-                {visible.map((diamond) => (
-                  <DiamondCard key={diamond.sku} diamond={diamond} />
-                ))}
-              </div>
-
-              {hasMore && (
-                <div ref={sentinelRef} className="flex justify-center py-12">
-                  <span className="text-xs uppercase tracking-widest text-charcoal-soft">
-                    Loading more…
-                  </span>
-                </div>
-              )}
-            </>
           )}
-        </div>
-      </div>
-
-      <FilterDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-        <FilterPanel {...filterPanelProps} />
-      </FilterDrawer>
+        </>
+      )}
     </div>
   );
 }

@@ -25,12 +25,17 @@ export async function generateMetadata({
     return { title: `Diamond Not Found | ${SITE.name}` };
   }
 
+  // SEO/link-preview description only — never rendered on the page itself.
+  const metaDescription =
+    diamond.description ||
+    `${diamond.shape} diamond, ${diamond.carat.toFixed(2)} ct, color ${diamond.color}, clarity ${diamond.clarity}, ${diamond.certificate} certified.`;
+
   return {
     title: `${diamond.title} | ${SITE.name}`,
-    description: diamond.description,
+    description: metaDescription,
     openGraph: {
       title: diamond.title,
-      description: diamond.description,
+      description: metaDescription,
       images: diamond.images[0] ? [diamond.images[0]] : undefined,
     },
   };
@@ -73,14 +78,7 @@ export default async function DiamondDetailPage({
             <SpecTable diamond={diamond} />
           </div>
 
-          <div className="mt-8">
-            <h2 className="font-serif text-lg text-charcoal">Description</h2>
-            <p className="mt-3 text-sm leading-relaxed text-charcoal-soft">
-              {diamond.description}
-            </p>
-          </div>
-
-          <div className="mt-10 border-t border-line pt-8">
+          <div className="mt-8 border-t border-line pt-8">
             <p className="text-xs uppercase tracking-[0.18em] text-charcoal-soft">
               Your Price
             </p>
