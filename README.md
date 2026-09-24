@@ -8,6 +8,10 @@ otherwise have access to. Accordingly, **the site never displays our `price_usd`
 each store rep can tap "Set Your Price" on a diamond's detail page and type in whatever price
 they want to quote, saved locally on that device (see "Pricing model" below).
 
+The catalog itself is a bare wall of photos on purpose — no logo, no header/footer, no visible
+captions. A diamond's shape/carat/color/clarity appear only in a hover overlay on its photo; see
+"Photo-first catalog" below for how that also works as tap-then-tap on a touch device.
+
 ## Running it locally
 
 ```bash
@@ -104,13 +108,13 @@ place.
 app/
   page.tsx                 Catalog page (server component: loads + passes data)
   diamond/[sku]/page.tsx   Diamond detail page (SSG via generateStaticParams)
-  layout.tsx               Root layout: fonts, Header, Footer, global metadata
+  layout.tsx               Root layout: fonts, global metadata (no header/footer chrome)
   not-found.tsx            404 page
   globals.css              Tailwind v4 theme tokens (colors, fonts) + small custom CSS
 
 components/
-  Header.tsx, Footer.tsx
-  DiamondCard.tsx          Catalog grid item (shape/carat/color/clarity — no price)
+  DiamondCard.tsx          Catalog grid item — bare photo; shape/carat/color/clarity only
+                           appear in a hover overlay, never as a visible caption
   CatalogClient.tsx        Client-side filtering/sorting/infinite scroll + URL sync
   FilterBar.tsx            Horizontal filter bar above the grid — Shape/Carat/Color dropdowns + sort
   RangeSlider.tsx          Dual-thumb range slider (carat, used inside the Carat dropdown)
@@ -151,13 +155,17 @@ scripts/
   stay shareable and bookmarkable, and reloading from a shared link restores the exact state.
 - **Infinite scroll**: an `IntersectionObserver` on a sentinel element reveals results in batches
   of 24 as the user scrolls.
-- **Photo-first catalog**: by design there's no page intro copy and no per-diamond description
-  shown anywhere — the grid of photos is the first and only thing between the header and the
-  stones. Filters live in a horizontal bar (`FilterBar.tsx`) above the grid rather than a sidebar,
-  so nothing competes with the photos for space, on desktop or mobile.
+- **Photo-first catalog**: no logo, no header/footer, no page intro copy, no visible card
+  captions, no per-diamond description anywhere — just a small `FilterBar.tsx` (Shape/Carat/Color
+  + sort) above a bare grid of photos. A card's details render in a `group-hover` overlay
+  (`DiamondCard.tsx`) that's invisible until hovered — implemented in pure CSS, no JS. On a
+  touchscreen (e.g. the iPad this is built for), Safari's native behavior handles the interaction
+  for free: the first tap on a link with a `:hover` style triggers that hover state instead of
+  navigating, so tapping a photo once reveals the overlay and tapping again opens the diamond's
+  full detail page.
+- **Business details**: name, phone, WhatsApp, email and hours all live in `lib/site.ts`, used by
+  page metadata (browser tab titles). They're not rendered anywhere in the UI right now since the
+  header/footer were removed — wire them back in wherever you want contact info to reappear.
 - **Inquire CTA**: currently a client-side form that shows a confirmation but does not send
   anywhere — see the `TODO` in `components/InquireButton.tsx` for wiring it to a real backend/CRM
   (e.g. an API route that emails the concierge team or forwards to a CRM like HubSpot/Salesforce).
-- **Business details**: name, phone, WhatsApp, email and hours all live in one place —
-  `lib/site.ts` — and are used by the header, footer and page metadata. Edit that file to change
-  any of them site-wide.

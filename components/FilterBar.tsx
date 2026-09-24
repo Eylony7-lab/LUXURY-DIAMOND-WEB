@@ -33,7 +33,7 @@ function Dropdown({
       <button
         type="button"
         onClick={() => setIsOpen((v) => !v)}
-        className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm transition-colors ${
+        className={`flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs transition-colors ${
           count > 0
             ? "border-gold text-charcoal"
             : "border-line text-charcoal-soft hover:border-gold/60"
@@ -41,19 +41,19 @@ function Dropdown({
       >
         {label}
         {count > 0 && (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[10px] text-white">
+          <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-gold text-[9px] text-white">
             {count}
           </span>
         )}
         <ChevronDown
-          size={14}
+          size={12}
           strokeWidth={1.5}
           className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 top-full z-30 mt-2 w-72 max-w-[85vw] rounded-lg border border-line bg-ivory p-5 shadow-lg">
+        <div className="absolute left-0 top-full z-30 mt-2 w-64 max-w-[85vw] rounded-lg border border-line bg-ivory p-4 shadow-lg">
           {children}
         </div>
       )}
@@ -92,7 +92,7 @@ export default function FilterBar({
       : 0;
 
   return (
-    <div className="flex flex-wrap items-center gap-3 border-b border-line pb-6">
+    <div className="flex flex-wrap items-center gap-2 border-b border-line pb-4">
       <Dropdown label="Shape" count={filters.shapes.length}>
         <div className="grid grid-cols-2 gap-2">
           {options.shapes.map((shape) => {
@@ -100,7 +100,7 @@ export default function FilterBar({
             return (
               <label
                 key={shape}
-                className={`flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-sm transition-colors ${
+                className={`flex cursor-pointer items-center gap-2 rounded border px-2.5 py-1.5 text-xs transition-colors ${
                   checked
                     ? "border-gold bg-gold/10 text-charcoal"
                     : "border-line text-charcoal-soft hover:border-gold/60"
@@ -137,7 +137,7 @@ export default function FilterBar({
             return (
               <label
                 key={color}
-                className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border text-sm transition-colors ${
+                className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border text-xs transition-colors ${
                   checked
                     ? "border-gold bg-gold text-white"
                     : "border-line text-charcoal-soft hover:border-gold/60"
@@ -166,8 +166,8 @@ export default function FilterBar({
         </button>
       )}
 
-      <div className="ml-auto flex items-center gap-4">
-        <p className="text-sm text-charcoal-soft">
+      <div className="ml-auto flex items-center gap-3">
+        <p className="text-xs text-charcoal-soft">
           {resultCount} {resultCount === 1 ? "diamond" : "diamonds"}
         </p>
         <SortDropdown value={sort} onChange={onSortChange} />
