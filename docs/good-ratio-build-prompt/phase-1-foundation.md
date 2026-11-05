@@ -26,9 +26,12 @@ Create **every table, enum, index, and view in Project Knowledge §3**, includin
 
 ## 4. Nutrition adapter (Edge Functions)
 - `lookup_food`: input `{ query, state?: 'raw'|'cooked', method?: 'grilled'|'fried'|..., lean_ratio?, skin?: boolean }`. Queries FatSecret first and USDA FoodData Central as a fallback, normalizes everything to per-100 g plus serving options, caches the result in `foods`, and returns the top five candidates with the provider and id.
-- `lookup_barcode`: input `{ code }`. Checks FatSecret first, then Open Food Facts, and caches the result.
+- `lookup_barcode`: input `{ code }`. Checks Nutritionix UPC first, then FatSecret, then Open Food Facts, and caches the result.
+- `parse_food_text`: input `{ text }`, such as "2 eggs and a slice of sourdough". Calls Nutritionix `POST /natural/nutrients` and returns the parsed items. If Nutritionix is unavailable, the AI splits the text into items and runs `lookup_food` on each.
+- Every adapter takes a `use` parameter (`consumer` | `intake`) that sets the provider order. Consumer searches go Nutritionix, then FatSecret, then USDA. Intake searches go FatSecret, then USDA, then Nutritionix.
+- Nutritionix circuit breaker: on a 401, 403, or 429 response, or a missing key, skip it for 1 hour and fall back. Keep a per-provider daily usage counter.
 - `convert_portion`: converts between oz, cup, tbsp, tsp, and g using the database's serving data for that food. Raw-to-cooked conversion only uses the database's raw and cooked entries, never a fixed ratio.
-- Put the secrets in Lovable Cloud secrets: `FATSECRET_CLIENT_ID`, `FATSECRET_CLIENT_SECRET`, `USDA_FDC_API_KEY`. Ask me for them when you need them.
+- Put the secrets in Lovable Cloud secrets: `FATSECRET_CLIENT_ID`, `FATSECRET_CLIENT_SECRET`, `USDA_FDC_API_KEY`, `NUTRITIONIX_APP_ID`, `NUTRITIONIX_APP_KEY`. Ask me for them when you need them.
 - Write a small test page at `/dev/nutrition` that searches, shows raw vs. cooked entries side by side, and scans a barcode with `@zxing/browser`.
 
 ## 5. Shell layouts (no feature content yet)

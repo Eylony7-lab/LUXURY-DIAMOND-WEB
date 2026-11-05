@@ -10,12 +10,12 @@ Built from three source docs: the *Good Ratio Product Workflow Overview* (July 2
    - `phase-2-restaurant-portal.md`: claim and verify, menu upload, AI extraction, kitchen setup, per-dish verification, Action Needed, publishing, analytics (includes the verbatim Menu Intake system prompt)
    - `phase-3-consumer-app.md`: onboarding and target formula, Today, logging (search, barcode, manual), Discover ranking, dish pages, flags
    - `phase-4-coach-notifications.md`: Ratio Coach, notification engine, emails, admin
-4. Add secrets when Lovable asks: FatSecret client ID and secret, USDA FDC key, Google Places key, Resend key, VAPID keys.
+4. Add secrets when Lovable asks: FatSecret client ID and secret, Nutritionix App ID and App Key, USDA FDC key, Google Places key, Resend key, VAPID keys.
 
 ## Decisions taken where the source docs were open or conflicting
 | Topic | Decision | Why |
 |---|---|---|
-| Nutrition DB | FatSecret first, USDA FDC as a fallback, behind one `lookup_food` adapter | The code already uses FatSecret, and the adapter keeps the provider swappable. **Check FatSecret's license for storing and displaying values.** |
+| Nutrition DB | FatSecret, Nutritionix (free trial) and USDA behind one adapter, with a different provider order per use: Nutritionix first for consumer search, plain-language and barcode logging; FatSecret first for restaurant menu intake | Each provider is used where it is strongest. Nutritionix sits behind a circuit breaker, so the app keeps working when the trial ends. **Check each license for storing and displaying values.** |
 | Onboarding length | 9 required questions, with the remaining 4 on one optional screen | The workflow doc lists 13 but also recommends 8–9 core questions. |
 | Who confirms | Owner or manager. Staff can answer but not confirm. | Accountability, as the intake spec recommends. |
 | Spot-check reward | A "Scale-checked" marker plus a ranking boost | The doc floated "Lab-checked", but there's no lab involved, so that label would mislead diners. |

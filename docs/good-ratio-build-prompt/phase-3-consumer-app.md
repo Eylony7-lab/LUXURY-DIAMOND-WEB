@@ -42,11 +42,12 @@ Full-screen steps: a progress bar ("3/9") at the top, one question per screen as
 - A weekly mini-chart (seven bars, the target as a line) and a "Log weight" chip.
 - Empty state for the first day: "Log your first meal. Numbers first, guesswork never."
 
-## 3. Log food (`+` tab, a bottom sheet with three modes)
+## 3. Log food (`+` tab, a bottom sheet with four modes)
 The **same logging component** is reused everywhere: Search, a recommended dish, Coach, or restaurant detail.
 1. **Search:** a debounced search across (a) published restaurant dishes (marked with a confidence badge and the restaurant name, ranked first when nearby), (b) recent and frequent foods, and (c) `lookup_food` results. Each result shows the name, serving, kcal, and P/C/F.
 2. **Scan barcode:** full-screen camera with `@zxing/browser`, then `lookup_barcode`, then the confirm screen. If the barcode isn't found: "We couldn't find that one. Enter it manually?"
-3. **Manual:** name, kcal (required), and protein, carbs, and fat (optional). "Save as my food" lets them reuse it.
+3. **Describe it:** a plain-language box ("2 eggs, a slice of sourdough and a latte"). It calls `parse_food_text` (Nutritionix) and shows each parsed item as an editable row before logging. Show "Powered by Nutritionix" under the results.
+4. **Manual:** name, kcal (required), and protein, carbs, and fat (optional). "Save as my food" lets them reuse it.
 - **Confirm screen:** a servings stepper (0.25 steps) plus a unit selector, a meal picker (defaulting from the time of day and onboarding meal times), live macro totals, and **Log it**. Restaurant dishes include size and substitution options when the restaurant defined them, and the entry stores `dish_version_id` so later menu edits never rewrite history.
 - After logging: the ring animates, a toast confirms with an **Undo**, and a `dish_events.logged` event is sent for restaurant dishes.
 

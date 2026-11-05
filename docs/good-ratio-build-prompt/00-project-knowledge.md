@@ -44,7 +44,7 @@ Use UUID primary keys, `created_at`/`updated_at` timestamps, and soft delete (`d
 - `daily_targets`: user_id, effective_from date, kcal, protein_g, carbs_g, fat_g, bmr, tdee, formula_version. A new row is written whenever an input changes. History is kept.
 - `weight_logs`: user_id, logged_on, weight_kg
 - `food_log_entries`: user_id, logged_at, meal (`breakfast`|`lunch`|`dinner`|`snack`), source (`search`|`barcode`|`manual`|`restaurant_dish`|`coach`), food_id (nullable), dish_id (nullable), dish_version_id (nullable, freezes the numbers at log time), name, servings numeric, kcal, protein_g, carbs_g, fat_g
-- `foods`: a cache of nutrition DB results. provider (`fatsecret`|`usda`|`custom`), provider_food_id, barcode, name, brand, serving_desc, serving_g, kcal, protein_g, carbs_g, fat_g, raw_payload jsonb, fetched_at
+- `foods`: a cache of nutrition DB results. provider (`fatsecret`|`nutritionix`|`usda`|`off`|`custom`), provider_food_id, barcode, name, brand, serving_desc, serving_g, kcal, protein_g, carbs_g, fat_g, raw_payload jsonb, fetched_at
 - `saved_dishes`: user_id, dish_id
 - `user_dish_flags`: user_id, dish_id, field (`kcal`|`protein`|`carbs`|`fat`|`portion`|`allergen`|`other`), note, status (`open`|`sent_to_restaurant`|`resolved`|`rejected`)
 
@@ -78,8 +78,18 @@ Use UUID primary keys, `created_at`/`updated_at` timestamps, and soft delete (`d
 |---|---|---|
 | Auth | Lovable Cloud Auth | Email magic link + Google + Apple sign-in. Phone OTP for restaurant verification. |
 | AI (menu parsing, intake assistant, label OCR, coach) | Lovable AI gateway, multimodal model | Reads PDF and image menus. Uses structured JSON output and tool calling. Each use gets its own system prompt. |
-| Nutrition data | **FatSecret Platform API** (primary), **USDA FoodData Central** (fallback) | Always behind one `lookup_food(query, state, method)` adapter and `lookup_barcode(code)`, so the provider can be swapped. Cache results in `foods`. Must support raw, cooked, and fried entries. Check that FatSecret's license allows storing and displaying values in-app. |
-| Barcode scan | `@zxing/browser` (camera in browser) | Lookup order: FatSecret barcode, then Open Food Facts as a fallback. |
+| Nutrition data | **FatSecret Platform API**, **Nutritionix API v2** (free trial), **USDA FoodData Central** | All behind one adapter (`lookup_food`, `lookup_barcode`, `parse_food_text`) with **per-use provider order** (below), so any provider can be swapped or dropped. Cache results in `foods` with their `provider`. Check each provider's license for storing and displaying values in-app. |
+| Barcode scan | `@zxing/browser` (camera in browser) | Lookup order: Nutritionix UPC, then FatSecret barcode, then Open Food Facts. |
+
+**Provider order by use**
+| Use | Order | Why |
+|---|---|---|
+| Consumer search and logging | Nutritionix instant search, then FatSecret, then USDA | Nutritionix has the strongest branded and chain-restaurant coverage. |
+| Consumer plain-language logging ("2 eggs and toast") | Nutritionix `natural/nutrients`. Fallback: the AI splits the text into items, then `lookup_food` | This is Nutritionix's core strength. |
+| Barcode | Nutritionix UPC, then FatSecret, then Open Food Facts | |
+| Restaurant menu intake (the `lookup_food` tool) | FatSecret, then USDA, then Nutritionix | Needs precise raw, cooked, and fried entries. |
+
+**Nutritionix details.** Base URL `https://trackapi.nutritionix.com/v2`. Headers `x-app-id`, `x-app-key`, and `x-remote-user-id` (send the hashed user id, or `0` in dev). Endpoints: `POST /natural/nutrients`, `GET /search/instant`, `GET /search/item?nix_item_id=|upc=`. Verify these against the current docs before building. Secrets: `NUTRITIONIX_APP_ID`, `NUTRITIONIX_APP_KEY`. Show "Powered by Nutritionix" wherever its data appears, and follow its caching terms. **It runs on a free trial, so build a circuit breaker:** on a 401, 403, or 429 response, or a missing key, skip Nutritionix for 1 hour, fall back to the next provider, and log the event. A per-provider daily usage counter appears in `/admin`. The app must work fully with Nutritionix turned off.
 | Places | Google Places API | Restaurant claim and verification, address autocomplete, lat/lng. |
 | Location | Browser Geolocation | With a manual city or ZIP fallback. |
 | Email | Resend | Verification, team invites, weekly check-in, "menu ready" emails. |
