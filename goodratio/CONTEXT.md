@@ -28,7 +28,7 @@ Good Ratio connects diners with nutrition-aware restaurant dishes and gives rest
 
 ## Offer
 - **Primary ask in outreach:** pilot or signed LOI
-- **Plans:** Starter, Pro (featured/recommended), Elite. Monthly prices: TODO (not shown on the comparison table)
+- **Plans (USD per month — confirm billing period before quoting annual terms):** Starter **$75**, Pro **$250** (featured/recommended), Elite **$499**
 
 | Feature | Starter | Pro | Elite |
 |---|---|---|---|
@@ -44,6 +44,7 @@ Good Ratio connects diners with nutrition-aware restaurant dishes and gives rest
 | Priority support | — | ✓ | ✓ |
 | QR nutrition menu | — | — | ✓ |
 | Screen / API integrations | — | — | ✓ |
+| Price / month | $75 | $250 | $499 |
 | Locations | 1 | 1 | Unlimited |
 | White-glove onboarding | — | — | ✓ |
 - **Pilot terms:** TODO (length, cost, success criteria)
